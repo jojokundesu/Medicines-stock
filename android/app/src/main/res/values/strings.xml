@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Dukaan Medicos</string>
+    <string name="title_activity_main">Dukaan Medicos</string>
+    <string name="package_name">com.dukaan.medicos</string>
+    <string name="custom_url_scheme">com.dukaan.medicos</string>
+</resources>
