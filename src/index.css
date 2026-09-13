@@ -35,7 +35,8 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 .topbar {
   position: absolute; top: 12px; left: 12px; right: 12px;
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+  row-gap: 6px;
 }
 .topbar .chip {
   background: rgba(16,28,44,.85); border: 1px solid var(--line);
@@ -62,6 +63,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 .stage-panel {
   position: absolute; left: 12px; bottom: 12px; width: 340px; padding: 14px;
+  max-height: calc(100% - 84px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .stage-panel h3 { font-size: 15px; margin-bottom: 4px; }
 .stage-panel p { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
@@ -86,8 +90,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 /* ---------- calculator overlay ---------- */
 .calc-overlay {
-  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-  width: 280px; padding: 14px;
+  padding: 14px;
 }
 .calc-overlay .display { font-size: 30px; }
 
@@ -124,7 +127,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 /* ---------- inspect overlay ---------- */
 .inspect {
-  position: absolute; right: 12px; top: 70px; width: 260px; padding: 16px;
+  padding: 16px;
   text-align: center;
 }
 .inspect .label-card { background: #fff; color: #111; border-radius: 10px; padding: 18px 12px; margin-bottom: 10px; }
@@ -162,8 +165,32 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .receipt .rrow { display: flex; justify-content: space-between; padding: 2px 0; }
 .receipt .total { border-top: 1px dashed #999; margin-top: 6px; padding-top: 6px; font-weight: 700; }
 
-.hint-pop { position: absolute; left: 12px; bottom: 300px; width: 300px; padding: 12px; font-size: 14px; color: #ffe9b8; }
+.hint-pop { margin-top: 10px; padding: 10px 12px; font-size: 13.5px; color: #ffe9b8; position: relative; }
 .hint-btn { background: rgba(245,158,11,.15); border: 1px solid #7c5a10; color: var(--amber); border-radius: 10px; padding: 8px 12px; font-size: 13px; font-weight: 700; }
+
+/* ---------- dismissible modals ---------- */
+.modal-backdrop {
+  position: absolute; inset: 0; z-index: 50;
+  background: rgba(3, 8, 18, 0.55);
+  display: flex; align-items: center; justify-content: center;
+  padding: 14px;
+}
+.modal-panel {
+  position: relative;
+  width: min(320px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.modal-close {
+  position: absolute; top: 8px; right: 8px; z-index: 2;
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5); color: #fff;
+  font-size: 16px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-close:active { background: rgba(0, 0, 0, 0.75); }
+.hint-close { position: static; width: 24px; height: 24px; font-size: 12px; }
 
 .timer-bar { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); width: 220px; height: 10px; background: rgba(0,0,0,.4); border-radius: 6px; overflow: hidden; }
 .timer-bar > div { height: 100%; background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444); border-radius: 6px; }
@@ -174,6 +201,5 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 @media (max-width: 700px) {
   .stage-panel { width: calc(100% - 24px); }
   .order-card { display: none; }
-  .calc-overlay { left: 8px; width: 240px; }
   .denom-grid { grid-template-columns: repeat(3, 1fr); }
 }

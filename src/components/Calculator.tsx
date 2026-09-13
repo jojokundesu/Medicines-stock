@@ -4,7 +4,7 @@ import { audio } from '../audio';
 type Op = '+' | '-' | '×' | '÷' | null;
 
 /** Physical-style calculator with + − × ÷ % C ⌫ = */
-export default function Calculator({ onUse }: { onUse: (result: string) => void }) {
+export default function Calculator({ onUse, onClose }: { onUse: (result: string) => void; onClose: () => void }) {
   const [display, setDisplay] = useState('0');
   const [acc, setAcc] = useState<number | null>(null);
   const [op, setOp] = useState<Op>(null);
@@ -75,12 +75,14 @@ export default function Calculator({ onUse }: { onUse: (result: string) => void 
   const useResult = () => { audio.play('click'); onUse(display); };
 
   return (
-    <div className="panel calc-overlay">
-      <div className="row" style={{ marginBottom: 6 }}>
-        <span style={{ fontSize: 12, color: 'var(--muted)' }}>CALCULATOR</span>
-        <div className="spacer" />
-        <span style={{ fontSize: 12, color: 'var(--muted)' }}>{expr || ' '}</span>
-      </div>
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="panel modal-panel calc-overlay" onClick={(e) => e.stopPropagation()}>
+        <button className="modal-close" aria-label="Close calculator" onClick={onClose}>✕</button>
+        <div className="row" style={{ marginBottom: 6 }}>
+          <span style={{ fontSize: 12, color: 'var(--muted)' }}>CALCULATOR</span>
+          <div className="spacer" />
+          <span style={{ fontSize: 12, color: 'var(--muted)' }}>{expr || ' '}</span>
+        </div>
       <div className="display">{display}</div>
       <div className="keypad">
         <button className="key danger" onClick={clear}>C</button>
@@ -97,6 +99,7 @@ export default function Calculator({ onUse }: { onUse: (result: string) => void 
         <button className="key" onClick={() => digit('.')}>.</button>
         <button className="key confirm" onClick={equals}>=</button>
         <button className="key confirm wide" onClick={useResult}>USE RESULT</button>
+      </div>
       </div>
     </div>
   );

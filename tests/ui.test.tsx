@@ -128,6 +128,37 @@ describe('UI smoke: full transaction loop', () => {
   });
 });
 
+describe('UI smoke: popups can be dismissed', () => {
+  it('calculator opens and closes via ✕', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await waitFor(() => expect(screen.getByText(/open the shop/i)).toBeTruthy());
+    await user.click(screen.getByRole('button', { name: /open the shop/i }));
+    await user.click(screen.getByRole('button', { name: /got it/i }));
+
+    await user.click(screen.getByRole('button', { name: /calculator/i }));
+    expect(screen.getByText('CALCULATOR')).toBeTruthy();
+    await user.click(screen.getByRole('button', { name: /close calculator/i }));
+    expect(screen.queryByText('CALCULATOR')).toBeNull();
+    expect(useGame.getState().stage).toBe('bill');
+  });
+
+  it('hint opens and closes via ✕', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await waitFor(() => expect(screen.getByText(/open the shop/i)).toBeTruthy());
+    await user.click(screen.getByRole('button', { name: /open the shop/i }));
+    await user.click(screen.getByRole('button', { name: /got it/i }));
+
+    await user.click(screen.getByRole('button', { name: /hint/i }));
+    expect(screen.getByText('💡 HINT')).toBeTruthy();
+    expect(useGame.getState().hintLevel).toBe(1);
+    await user.click(screen.getByRole('button', { name: /dismiss hint/i }));
+    expect(screen.queryByText('💡 HINT')).toBeNull();
+    expect(useGame.getState().hintLevel).toBe(0);
+  });
+});
+
 describe('UI smoke: calculator + wrong answer feedback', () => {
   it('detects a wrong bill and reports the error at review', async () => {
     const user = userEvent.setup();

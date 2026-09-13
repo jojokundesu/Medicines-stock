@@ -106,6 +106,7 @@ export type GameStore = {
   removeDenom(id: string): void;
   submitCashout(): void;
   useHint(): void;
+  dismissHint(): void;
   setDrawerOpen(open: boolean): void;
   tickPatience(dtMs: number): void;
   markCalculator(): void;
@@ -352,6 +353,8 @@ export const useGame = create<GameStore>((set, get) => ({
     set({ hintLevel: level + 1 });
     audio.play('hint');
   },
+
+  dismissHint: () => set({ hintLevel: 0 }),
 
   setDrawerOpen: (open) => {
     set({ drawerOpen: open });

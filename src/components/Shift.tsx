@@ -155,18 +155,21 @@ export default function Shift() {
 
         {/* inspect overlay */}
         {inspectIndex != null && spec.lines[inspectIndex] && (
-          <div className="panel inspect">
-            <div className="label-card">
-              <div className="name">{spec.lines[inspectIndex].product.name}</div>
-              <div className="sub">{spec.lines[inspectIndex].product.form}</div>
-              <div className="mrp">MRP ₹{spec.lines[inspectIndex].product.mrp}</div>
-              <div className="sub">
-                {spec.lines[inspectIndex].product.partialAllowed
-                  ? `Strip of ${spec.lines[inspectIndex].product.pack} units`
-                  : `Pack of ${spec.lines[inspectIndex].product.pack}`}
+          <div className="modal-backdrop" onClick={() => setInspectIndex(null)}>
+            <div className="panel modal-panel inspect" onClick={(e) => e.stopPropagation()}>
+              <button className="modal-close" aria-label="Close label" onClick={() => setInspectIndex(null)}>✕</button>
+              <div className="label-card">
+                <div className="name">{spec.lines[inspectIndex].product.name}</div>
+                <div className="sub">{spec.lines[inspectIndex].product.form}</div>
+                <div className="mrp">MRP ₹{spec.lines[inspectIndex].product.mrp}</div>
+                <div className="sub">
+                  {spec.lines[inspectIndex].product.partialAllowed
+                    ? `Strip of ${spec.lines[inspectIndex].product.pack} units`
+                    : `Pack of ${spec.lines[inspectIndex].product.pack}`}
+                </div>
               </div>
+              <button className="big-btn" style={{ margin: 0 }} onClick={() => setInspectIndex(null)}>Done</button>
             </div>
-            <button className="pill" onClick={() => setInspectIndex(null)}>Close</button>
           </div>
         )}
 
@@ -214,7 +217,9 @@ export default function Shift() {
               <div className="spacer" />
               <button className="pill" onClick={() => setCalcOpen(o => !o)}>🧮 Calculator</button>
             </div>
-            {store.hintLevel > 0 && <HintBox stage={store.stage} level={store.hintLevel} spec={spec} />}
+            {store.hintLevel > 0 && (
+              <HintBox stage={store.stage} level={store.hintLevel} spec={spec} onClose={() => store.dismissHint()} />
+            )}
           </div>
         )}
 
@@ -243,7 +248,7 @@ export default function Shift() {
         )}
 
         {/* calculator */}
-        {calcOpen && <Calculator onUse={copyResult} />}
+        {calcOpen && <Calculator onUse={copyResult} onClose={() => setCalcOpen(false)} />}
 
         {/* patience timer */}
         <div className="timer-bar"><div style={{ width: `${patienceRatio * 100}%` }} /></div>
@@ -252,7 +257,7 @@ export default function Shift() {
   );
 }
 
-function HintBox({ stage, level, spec }: { stage: string; level: number; spec: TransactionSpec }) {
+function HintBox({ stage, level, spec, onClose }: { stage: string; level: number; spec: TransactionSpec; onClose: () => void }) {
   const lines: string[] = [];
   if (stage === 'bill') {
     lines.push('Multiply quantity × MRP for each item, then add them.');
@@ -272,6 +277,10 @@ function HintBox({ stage, level, spec }: { stage: string; level: number; spec: T
   }
   return (
     <div className="panel hint-pop">
+      <div className="row" style={{ justifyContent: 'space-between', marginBottom: 4 }}>
+        <span style={{ fontSize: 12, color: 'var(--amber)', fontWeight: 700 }}>💡 HINT</span>
+        <button className="modal-close hint-close" aria-label="Dismiss hint" onClick={onClose}>✕</button>
+      </div>
       {lines.slice(0, level).map((l, i) => <div key={i} style={{ marginBottom: 4 }}>• {l}</div>)}
     </div>
   );
