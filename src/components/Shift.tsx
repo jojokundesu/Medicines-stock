@@ -241,6 +241,14 @@ export default function Shift() {
             {store.stage === 'change' && store.playerPaid != null && (
               <p style={{ color: 'var(--amber)' }}>You counted the payment as {formatINR(store.playerPaid)}.</p>
             )}
+            <div className="order-strip">
+              {spec.lines.map((l, i) => (
+                <span key={i} className="order-chip">
+                  <b>{l.units > 0 && l.product.partialAllowed ? `${l.units} tabs` : `${l.quantity}×`}</b>{' '}
+                  {l.product.name}{pcts[i] > 0 ? ` −${pcts[i]}%` : ''}
+                </span>
+              ))}
+            </div>
             <Keypad
               value={currentInput}
               onChange={(v) => {

@@ -234,3 +234,69 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   .order-card { display: none; }
   .denom-grid { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* ---------- compact order strip (shown in portrait, where the side card is hidden) ---------- */
+.order-strip { display: none; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.order-chip {
+  background: var(--panel2); border: 1px solid var(--line); border-radius: 8px;
+  padding: 4px 8px; font-size: 12px; line-height: 1.3;
+}
+.order-chip b { color: var(--amber); font-weight: 700; }
+
+/* ---------- portrait (phone) layout — realme 9i ~20:9 ---------- */
+@media (orientation: portrait) {
+  .timer-bar { top: 0; left: 0; bottom: auto; transform: none; width: 100%; height: 6px; border-radius: 0; }
+  .timer-bar > div { border-radius: 0; }
+
+  .topbar { gap: 4px; row-gap: 4px; }
+  .topbar .chip { font-size: 11px; padding: 3px 8px; border-radius: 8px; }
+
+  .customer-bubble { top: 74px; font-size: 14px; padding: 10px 12px; border-radius: 12px; line-height: 1.4; }
+
+  .order-strip { display: flex; }
+
+  .stage-panel { width: calc(100% - 16px); left: 8px; bottom: 8px; padding: 10px; max-height: 60%; }
+  .stage-panel h3 { font-size: 14px; }
+  .stage-panel p { font-size: 12px; margin-bottom: 8px; }
+  .display { font-size: 22px; padding: 8px 12px; min-height: 36px; }
+  .keypad { gap: 5px; }
+  .key { padding: 9px 0; font-size: 17px; border-radius: 8px; }
+  .hint-btn { font-size: 12px; padding: 6px 10px; }
+
+  .drawer-overlay { width: calc(100% - 16px); padding: 10px; }
+  .drawer-overlay h3 { font-size: 13px; }
+  .denom-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .denom { padding: 6px 4px; }
+  .denom .note-chip { height: 38px; font-size: 13px; margin-bottom: 4px; }
+  .denom.coin .note-chip { width: 36px; height: 36px; }
+  .denom .counts { font-size: 10px; }
+  .denom .sel { font-size: 12px; min-width: 24px; }
+
+  .modal-panel { width: min(300px, 92%); }
+  .calc-overlay { padding: 10px; }
+  .inspect .label-card { padding: 12px; }
+  .inspect .label-card .mrp { font-size: 26px; }
+  .inspect .label-card .name { font-size: 14px; }
+
+  .hint-pop { font-size: 12px; padding: 8px 10px; }
+
+  .big-btn { padding: 13px; font-size: 16px; border-radius: 12px; }
+  .feedback { font-size: 14px; bottom: 96px; }
+
+  .menu-card { padding: 18px; }
+  .menu-card h1 { font-size: 28px; }
+  .menu-card .tag { font-size: 13px; }
+  .pill { padding: 8px 13px; font-size: 13px; }
+  .drill-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .drill-card { padding: 10px; }
+  .drill-title { font-size: 13px; }
+  .drill-blurb { font-size: 11px; }
+  .drill-prompt { font-size: 20px; }
+  .drill-detail { font-size: 13px; }
+  .drill-play { padding: 12px; }
+
+  .report-card { padding: 18px; }
+  .stat .v { font-size: 20px; }
+  .stat { padding: 10px; }
+  .receipt { font-size: 12px; }
+}

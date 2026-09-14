@@ -511,6 +511,8 @@ export class ShopScene {
     const h = this.container.clientHeight;
     if (!w || !h) return;
     this.camera.aspect = w / h;
+    // Widen the field of view in portrait so the counter stays in view.
+    this.camera.fov = w / h < 0.8 ? 80 : 70;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(w, h);
   }
