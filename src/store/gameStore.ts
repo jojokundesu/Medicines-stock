@@ -10,7 +10,7 @@ import type { MedicineData } from '../engine/products';
 import type { TransactionSpec, DiffCategory } from '../engine/types';
 import { audio } from '../audio';
 
-export type Screen = 'menu' | 'shift' | 'report';
+export type Screen = 'menu' | 'shift' | 'report' | 'drills';
 export type Stage = 'order' | 'bill' | 'pay' | 'change' | 'cashout' | 'review';
 export type DifficultyKey = keyof typeof DIFFICULTY;
 

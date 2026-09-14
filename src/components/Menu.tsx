@@ -5,7 +5,7 @@ import { audio } from '../audio';
 const LENGTHS = [5, 10, 15, 20];
 
 export default function Menu() {
-  const { difficulty, shiftLength, soundOn, setDifficulty, setShiftLength, toggleSound, startShift, medicines } = useGame();
+  const { difficulty, shiftLength, soundOn, setDifficulty, setShiftLength, toggleSound, startShift, setScreen, medicines } = useGame();
   const best = loadBest();
 
   const begin = () => {
@@ -62,6 +62,15 @@ export default function Menu() {
         </div>
 
         <button className="big-btn" onClick={begin} disabled={!medicines}>Open the shop →</button>
+
+        <div className="row" style={{ marginTop: 10 }}>
+          <button className="pill" style={{ flex: 1, justifyContent: 'center', padding: 13 }} onClick={() => { audio.play('click'); setScreen('drills'); }}>
+            🎯 Training Drills
+          </button>
+          <button className="pill" style={{ flex: 1, justifyContent: 'center', padding: 13 }} onClick={toggleSound}>
+            {soundOn ? '🔊 Sound on' : '🔇 Sound off'}
+          </button>
+        </div>
 
         <p style={{ color: 'var(--muted)', fontSize: 11, marginTop: 12 }}>
           Tip: tap a box on the counter to read its MRP. The calculator is a tool — you'll need it less over time.

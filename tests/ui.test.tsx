@@ -173,6 +173,30 @@ describe('UI smoke: popups can be dismissed', () => {
   });
 });
 
+describe('UI smoke: drills flow', () => {
+  it('opens drills from menu, plays a question, sees results', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await waitFor(() => expect(screen.getByText(/open the shop/i)).toBeTruthy());
+
+    await user.click(screen.getByRole('button', { name: /training drills/i }));
+    expect(screen.getByText('TRAINING DRILLS')).toBeTruthy();
+    expect(useGame.getState().screen).toBe('drills');
+
+    // default: ₹500 note challenge, easy, 10 questions
+    await user.click(screen.getByRole('button', { name: /start drill/i }));
+    expect(screen.getByText(/change to return/i)).toBeTruthy();
+
+    const st = useGame.getState();
+    // answer first question correctly via the store? No — type it.
+    // We don't know the answer; just verify the keypad renders and can type.
+    await user.click(screen.getByRole('button', { name: '1' }));
+    await user.click(screen.getByRole('button', { name: /check/i }));
+    // after answering (right or wrong), a feedback area appears
+    await waitFor(() => expect(screen.getByText(/answer:|✓|not/i)).toBeTruthy(), { timeout: 3000 });
+  });
+});
+
 describe('UI smoke: calculator + wrong answer feedback', () => {
   it('detects a wrong bill and reports the error at review', async () => {
     const user = userEvent.setup();

@@ -193,6 +193,36 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .hint-close { position: static; width: 24px; height: 24px; font-size: 12px; }
 .confirm-panel { width: min(360px, 100%); padding: 18px; text-align: center; }
 
+/* ---------- training drills ---------- */
+.drill-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.drill-card {
+  background: var(--panel2); border: 1px solid var(--line); border-radius: 12px;
+  padding: 14px 12px; text-align: left; transition: border-color .1s;
+}
+.drill-card.active { border-color: var(--teal-bright); background: #123a3a; }
+.drill-icon { font-size: 26px; }
+.drill-title { font-weight: 700; font-size: 14px; margin: 4px 0 4px; }
+.drill-blurb { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+.drill-play { padding: 16px; }
+.drill-question {
+  background: #08131f; border: 1px solid var(--line); border-radius: 12px;
+  padding: 16px; margin-bottom: 12px; text-align: center;
+}
+.drill-question.ok { border-color: var(--green); }
+.drill-question.bad { border-color: var(--red); }
+.drill-prompt { font-size: 24px; font-weight: 800; }
+.drill-detail { font-size: 15px; color: var(--muted); margin-top: 6px; }
+.drill-progress { height: 8px; background: rgba(0,0,0,.4); border-radius: 6px; overflow: hidden; margin-top: 6px; }
+.drill-progress > div { height: 100%; background: var(--teal-bright); border-radius: 6px; transition: width .3s; }
+
+.review-list { display: flex; flex-direction: column; gap: 8px; }
+.review-row {
+  background: var(--panel2); border: 1px solid var(--line); border-radius: 10px;
+  padding: 10px 12px; display: flex; justify-content: space-between; gap: 10px;
+  font-size: 14px;
+}
+
 .timer-bar { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); width: 220px; height: 10px; background: rgba(0,0,0,.4); border-radius: 6px; overflow: hidden; }
 .timer-bar > div { height: 100%; background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444); border-radius: 6px; }
 

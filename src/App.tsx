@@ -4,6 +4,7 @@ import type { MedicineData } from './engine/products';
 import Menu from './components/Menu';
 import Shift from './components/Shift';
 import Report from './components/Report';
+import Drills from './components/Drills';
 
 export default function App() {
   const screen = useGame(s => s.screen);
@@ -18,5 +19,6 @@ export default function App() {
 
   if (screen === 'menu') return <Menu />;
   if (screen === 'shift') return <Shift />;
+  if (screen === 'drills') return <Drills />;
   return <Report />;
 }
