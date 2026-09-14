@@ -445,6 +445,34 @@ function fmt(paise: number): string {
   return Number.isInteger(r) ? r.toLocaleString('en-IN') : r.toFixed(2);
 }
 
+// ---- personal best persistence ----
+export type BestRecord = {
+  accuracy: number;
+  bestStreak: number;
+  difficulty: string;
+  served: number;
+  at: number;
+};
+
+const BEST_KEY = 'dukaan.best.v1';
+
+export function loadBest(): BestRecord | null {
+  try {
+    const s = localStorage.getItem(BEST_KEY);
+    return s ? (JSON.parse(s) as BestRecord) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveBest(rec: Omit<BestRecord, 'at'>) {
+  try {
+    localStorage.setItem(BEST_KEY, JSON.stringify({ ...rec, at: Date.now() }));
+  } catch {
+    /* ignore */
+  }
+}
+
 // ---- selectors / helpers exported for the UI ----
 export function buildReport(results: TransactionResult[], difficulty: DifficultyKey, bestStreak: number): ShiftReport {
   const n = results.length || 1;

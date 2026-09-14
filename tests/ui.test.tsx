@@ -157,6 +157,20 @@ describe('UI smoke: popups can be dismissed', () => {
     expect(screen.queryByText('💡 HINT')).toBeNull();
     expect(useGame.getState().hintLevel).toBe(0);
   });
+  it('✕ opens a quit confirmation and can be cancelled', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await waitFor(() => expect(screen.getByText(/open the shop/i)).toBeTruthy());
+    await user.click(screen.getByRole('button', { name: /open the shop/i }));
+
+    await user.click(screen.getByRole('button', { name: /leave shift/i }));
+    expect(screen.getByText(/leave this shift/i)).toBeTruthy();
+    expect(useGame.getState().screen).toBe('shift');
+
+    await user.click(screen.getByRole('button', { name: /keep playing/i }));
+    expect(screen.queryByText(/leave this shift/i)).toBeNull();
+    expect(useGame.getState().screen).toBe('shift');
+  });
 });
 
 describe('UI smoke: calculator + wrong answer feedback', () => {

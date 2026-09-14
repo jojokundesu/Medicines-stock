@@ -14,6 +14,7 @@ export default function Shift() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [calcOpen, setCalcOpen] = useState(false);
   const [inspectIndex, setInspectIndex] = useState<number | null>(null);
+  const [confirmQuit, setConfirmQuit] = useState(false);
 
   const store = useGame();
 
@@ -33,6 +34,46 @@ export default function Shift() {
     }
     return () => { ro?.disconnect(); scene.dispose(); sceneRef.current = null; };
   }, []);
+
+  // --- desktop keyboard controls (digits, Enter, Backspace, Escape) ---
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const st = useGame.getState();
+      if (st.screen !== 'shift') return;
+      if (e.key === 'Escape') {
+        if (confirmQuit) setConfirmQuit(false);
+        else if (calcOpen) setCalcOpen(false);
+        else if (inspectIndex != null) setInspectIndex(null);
+        else setConfirmQuit(true);
+        return;
+      }
+      if (confirmQuit || calcOpen || inspectIndex != null) return;
+      const stage = st.stage;
+      if (stage === 'bill' || stage === 'pay' || stage === 'change') {
+        if (/^[0-9]$/.test(e.key)) {
+          const cur = stage === 'bill' ? st.billInput : stage === 'pay' ? st.paidInput : st.changeInput;
+          const apply = (v: string) => stage === 'bill' ? st.setBillInput(v) : stage === 'pay' ? st.setPaidInput(v) : st.setChangeInput(v);
+          apply(cur + e.key);
+        } else if (e.key === '.') {
+          const cur = stage === 'bill' ? st.billInput : stage === 'pay' ? st.paidInput : st.changeInput;
+          const apply = (v: string) => stage === 'bill' ? st.setBillInput(v) : stage === 'pay' ? st.setPaidInput(v) : st.setChangeInput(v);
+          apply(cur);
+        } else if (e.key === 'Backspace') {
+          const cur = stage === 'bill' ? st.billInput : stage === 'pay' ? st.paidInput : st.changeInput;
+          const apply = (v: string) => stage === 'bill' ? st.setBillInput(v) : stage === 'pay' ? st.setPaidInput(v) : st.setChangeInput(v);
+          apply(cur.slice(0, -1));
+        } else if (e.key === 'Enter') {
+          if (stage === 'bill') st.submitBill();
+          else if (stage === 'pay') st.submitPaid();
+          else st.submitChange();
+        }
+      } else if (stage === 'order' && e.key === 'Enter') {
+        st.advanceStage();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [confirmQuit, calcOpen, inspectIndex]);
 
   const spec = store.spec;
   const specId = spec?.id ?? 0;
@@ -121,7 +162,10 @@ export default function Shift() {
           <div className="chip" style={{ color: patienceRatio < 0.35 ? 'var(--red)' : 'var(--green)' }}>
             {patienceRatio < 0.35 ? '😠 impatient!' : '🙂 patient'}
           </div>
-          <button className="pill" onClick={() => store.goMenu()}>✕</button>
+          <button className="pill" aria-label="Toggle sound" onClick={() => store.toggleSound()}>
+            {store.soundOn ? '🔊' : '🔇'}
+          </button>
+          <button className="pill" aria-label="Leave shift" onClick={() => setConfirmQuit(true)}>✕</button>
         </div>
 
         {/* customer bubble */}
@@ -249,6 +293,23 @@ export default function Shift() {
 
         {/* calculator */}
         {calcOpen && <Calculator onUse={copyResult} onClose={() => setCalcOpen(false)} />}
+
+        {/* quit confirmation */}
+        {confirmQuit && (
+          <div className="modal-backdrop" onClick={() => setConfirmQuit(false)}>
+            <div className="panel modal-panel confirm-panel" onClick={(e) => e.stopPropagation()}>
+              <h3 style={{ marginBottom: 8 }}>Leave this shift?</h3>
+              <p style={{ color: 'var(--muted)', fontSize: 14, marginBottom: 14 }}>
+                You've served {store.customerIndex - 1} customer{store.customerIndex - 1 === 1 ? '' : 's'}.
+                Progress in this shift will be lost.
+              </p>
+              <div className="row">
+                <button className="pill" style={{ flex: 1, justifyContent: 'center', padding: 12 }} onClick={() => setConfirmQuit(false)}>Keep playing</button>
+                <button className="pill" style={{ flex: 1, justifyContent: 'center', padding: 12, background: '#3a1218', borderColor: '#7f1d1d', color: '#fca5a5' }} onClick={() => store.goMenu()}>Leave</button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* patience timer */}
         <div className="timer-bar"><div style={{ width: `${patienceRatio * 100}%` }} /></div>

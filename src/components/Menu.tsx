@@ -1,4 +1,4 @@
-import { useGame } from '../store/gameStore';
+import { useGame, loadBest } from '../store/gameStore';
 import { DIFFICULTY } from '../engine/engine';
 import { audio } from '../audio';
 
@@ -6,6 +6,7 @@ const LENGTHS = [5, 10, 15, 20];
 
 export default function Menu() {
   const { difficulty, shiftLength, soundOn, setDifficulty, setShiftLength, toggleSound, startShift, medicines } = useGame();
+  const best = loadBest();
 
   const begin = () => {
     audio.init();
@@ -25,6 +26,12 @@ export default function Menu() {
         <p style={{ color: 'var(--muted)', fontSize: 12, marginBottom: 4 }}>
           {medicines ? `${medicines.count} real medicines loaded from your stock CSV` : 'Loading medicines…'}
         </p>
+        {best && (
+          <div className="panel" style={{ margin: '10px 0', padding: 10, fontSize: 13, textAlign: 'left' }}>
+            <span style={{ color: 'var(--amber)', fontWeight: 700 }}>🏆 Personal best:</span>{' '}
+            {best.accuracy}% accuracy · 🔥 {best.bestStreak} streak · {best.difficulty} · {best.served} customers
+          </div>
+        )}
 
         <div className="menu-row">
           <label>Difficulty</label>

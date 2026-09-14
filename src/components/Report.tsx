@@ -1,10 +1,22 @@
-import { useGame, buildReport } from '../store/gameStore';
+import { useEffect } from 'react';
+import { useGame, buildReport, saveBest } from '../store/gameStore';
 import { formatINR } from '../engine/money';
 import { audio } from '../audio';
 
 export default function Report() {
   const { results, difficulty, bestStreak, goMenu, setScreen } = useGame();
   const report = buildReport(results, difficulty, bestStreak);
+
+  useEffect(() => {
+    if (report.customersServed > 0) {
+      saveBest({
+        accuracy: report.accuracy,
+        bestStreak: report.bestStreak,
+        difficulty: difficulty,
+        served: report.customersServed
+      });
+    }
+  }, [report.accuracy, report.bestStreak, report.customersServed, difficulty]);
 
   const again = () => { audio.play('chime'); setScreen('menu'); };
 

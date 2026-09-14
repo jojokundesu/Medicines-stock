@@ -462,29 +462,34 @@ export class ShopScene {
   }
 
   // ---------- input ----------
+  private onPointerDown = (e: PointerEvent) => {
+    this.dragging = true;
+    this.moved = false;
+    this.downX = e.clientX;
+    this.downY = e.clientY;
+  };
+  private onPointerMove = (e: PointerEvent) => {
+    if (!this.dragging) return;
+    const dx = e.clientX - this.downX;
+    const dy = e.clientY - this.downY;
+    if (Math.abs(dx) + Math.abs(dy) > 6) this.moved = true;
+    this.targetYaw -= dx * 0.004;
+    this.targetPitch = THREE.MathUtils.clamp(this.targetPitch - dy * 0.003, -0.6, 0.6);
+    this.downX = e.clientX;
+    this.downY = e.clientY;
+  };
+  private onPointerUp = (e: PointerEvent) => {
+    if (this.dragging && !this.moved) this.pick(e.clientX, e.clientY);
+    this.dragging = false;
+  };
+  private onResize = () => this.resize();
+
   private bindEvents() {
     const el = this.renderer.domElement;
-    el.addEventListener('pointerdown', (e) => {
-      this.dragging = true;
-      this.moved = false;
-      this.downX = e.clientX;
-      this.downY = e.clientY;
-    });
-    window.addEventListener('pointermove', (e) => {
-      if (!this.dragging) return;
-      const dx = e.clientX - this.downX;
-      const dy = e.clientY - this.downY;
-      if (Math.abs(dx) + Math.abs(dy) > 6) this.moved = true;
-      this.targetYaw -= dx * 0.004;
-      this.targetPitch = THREE.MathUtils.clamp(this.targetPitch - dy * 0.003, -0.6, 0.6);
-      this.downX = e.clientX;
-      this.downY = e.clientY;
-    });
-    window.addEventListener('pointerup', (e) => {
-      if (this.dragging && !this.moved) this.pick(e.clientX, e.clientY);
-      this.dragging = false;
-    });
-    window.addEventListener('resize', () => this.resize());
+    el.addEventListener('pointerdown', this.onPointerDown);
+    window.addEventListener('pointermove', this.onPointerMove);
+    window.addEventListener('pointerup', this.onPointerUp);
+    window.addEventListener('resize', this.onResize);
   }
 
   private pick(clientX: number, clientY: number) {
@@ -588,6 +593,11 @@ export class ShopScene {
   dispose() {
     this.disposed = true;
     cancelAnimationFrame(this.raf);
+    const el = this.renderer.domElement;
+    el.removeEventListener('pointerdown', this.onPointerDown);
+    window.removeEventListener('pointermove', this.onPointerMove);
+    window.removeEventListener('pointerup', this.onPointerUp);
+    window.removeEventListener('resize', this.onResize);
     this.renderer.dispose();
     this.renderer.domElement.remove();
   }
